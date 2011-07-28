@@ -1,0 +1,12 @@
+import(methods)
+import(Rcpp)
+import(SparseM)
+import(tm)
+
+exportClasses(
+              maxent
+              )
+
+exportPattern("^[^\\.]")
+
+S3method("predict","maxent")
