@@ -29,7 +29,7 @@ http://www.amberboydstun.com/
 }
 \examples{
 # READ THE CSV
-data <- read.csv(system.file("data/NYTimes.csv",package="maxent"))
+data <- read.csv(system.file("data/NYTimes.csv.gz",package="maxent"))
 # ALTERNATIVELY, USE THE data() FUNCTION
 data(NYTimes)
 }

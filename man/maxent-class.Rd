@@ -23,19 +23,19 @@ An \code{S4 class} containing the trained maximum entropy model and its correspo
   }
 }
 \author{
-Tim Jurka <tpjurka@ucdavis.edu>
+Timothy P. Jurka <tpjurka@ucdavis.edu>
 }
 \examples{
 # LOAD LIBRARY
 library(maxent)
 
 # READ THE DATA, PREPARE THE CORPUS, and CREATE THE MATRIX
-data <- read.csv(system.file("data/NYTimes.csv",package="maxent"))
+data <- read.csv(system.file("data/NYTimes.csv.gz",package="maxent"))
 corpus <- Corpus(VectorSource(data$Title))
 matrix <- DocumentTermMatrix(corpus)
 
 # TRAIN USING SPARSEM REPRESENTATION
-sparse <- dtm_to_sparsem(matrix)
+sparse <- as.compressed.matrix(matrix)
 model <- maxent(sparse[1:1000,],as.factor(data$Topic.Code)[1:1000])
 class(model)
 model@model
@@ -43,5 +43,4 @@ model@weights
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{classes}

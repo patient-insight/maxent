@@ -9,4 +9,8 @@ exportClasses(
 
 exportPattern("^[^\\.]")
 
+
+S3method("as","compressed.matrix")
 S3method("predict","maxent")
+S3method("load","model")
+S3method("save","model")
