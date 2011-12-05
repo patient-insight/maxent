@@ -1,52 +1,48 @@
 maxent <-
-function(feature_matrix,code_vector,feature_cutoff=0,gaussian_prior=0,inequality_constraints=0,set_heldout=0) {	
-	train_maxent <-
-	function(feature_matrix,code_vector,feature_cutoff=0,gaussian_prior=0,inequality_constraints=0,set_heldout=0) {
-		if (is.null(colnames(feature_matrix))) {
-			features <- as.character(c(1:ncol(feature_matrix)));
-		} else {
-			features <- colnames(feature_matrix);
-		}
-		
+function(feature_matrix,code_vector,l1_regularizer=0.0,l2_regularizer=0.0,use_sgd=FALSE,set_heldout=0,verbose=FALSE) {	
+    suppressWarnings(sink())
+    feature_matrix <- as.compressed.matrix(feature_matrix);
+	train_maxent <- function(feature_matrix,code_vector,l1_regularizer=0.0,l2_regularizer=0.0,use_sgd=FALSE,sgd_iter=30,sgd_eta0=1.0,sgd_alpha=0.85,set_heldout=0) {
+        
+        if (length(unique(feature_matrix@ja)) > 1) { ja <- sapply(feature_matrix@ja,toString); }
+        else { ja <- sapply(feature_matrix@ra,toString); }
 		code_vector <- sapply(code_vector,toString);
-		maximumentropy$add_samples(code_vector,features,feature_matrix);
-		model <- maximumentropy$train_model(feature_cutoff,gaussian_prior,inequality_constraints,set_heldout);
+		maximumentropy$add_samples(as.integer(feature_matrix@dimension[1]),as.integer(feature_matrix@dimension[2]),code_vector,feature_matrix@ia,ja,feature_matrix@ra);
+		model <- maximumentropy$train_model(l1_regularizer,l2_regularizer,use_sgd,sgd_iter,sgd_eta0,sgd_alpha,set_heldout);
 		
 		return(model);
 	}
 	
-	train_maxent_sparse <-
-	function(feature_matrix,code_vector,feature_cutoff=0,gaussian_prior=0,inequality_constraints=0,set_heldout=0) {
-		ja <- sapply(feature_matrix@ja,toString);
-		code_vector <- sapply(code_vector,toString);
-		maximumentropy$add_samples_sparse(as.integer(feature_matrix@dimension[1]),as.integer(feature_matrix@dimension[2]),code_vector,feature_matrix@ia,ja,feature_matrix@ra);
-		model <- maximumentropy$train_model(feature_cutoff,gaussian_prior,inequality_constraints,set_heldout);
-		
-		return(model);
-	}
-	
-	if (gaussian_prior > 0 && inequality_constraints > 0) {
-		print("ERROR: Gaussian priors and inequality modeling cannot be used together.");
+	if (l1_regularizer > 0 && l2_regularizer > 0) {
+		print("ERROR: L1 and L2 regularization cannot be used together.");
 		return(NULL);
 	}
 	
-	if (is.matrix.csr(feature_matrix) == TRUE) {
-		model <- train_maxent_sparse(feature_matrix,code_vector,feature_cutoff,gaussian_prior,inequality_constraints,set_heldout);
-	} else if (is.matrix(feature_matrix) == TRUE) {
-		if (rownames(summary(dimnames(feature_matrix)))[1] == "Docs") {
-			model <- train_maxent(feature_matrix,code_vector,feature_cutoff,gaussian_prior,inequality_constraints,set_heldout);
-		} else if (rownames(summary(dimnames(feature_matrix)))[1] == "Terms") {
-			stop("ERROR: Matrix must be of class DocumentTermMatrix, not TermDocumentMatrix.");
-		} else {
-			stop("ERROR: Not a valid term document matrix.");
-		}
-	} else {
-		stop("ERROR: Training data must be in matrix or matrix.csr (see package SparseM) format.");
-	}
+    if (l2_regularizer > 0 && use_sgd==TRUE) {
+        print("ERROR: L2 regularization is currently not supported in SGD mode.");
+		return(NULL);
+    }
+    
+    if (length(unique(code_vector)) > 255) {
+        print("ERROR: Too many types of labels (>255 unique labels).");
+        return(NULL);
+    }
+
+    if (verbose == FALSE) {
+        if(.Platform$OS.type == "unix") {
+            sink("/dev/null")
+        } else {
+            sink("NUL")
+        }
+    }
+    
+    model <- train_maxent(feature_matrix,code_vector,l1_regularizer,l2_regularizer,use_sgd,set_heldout);
 	
 	weights <- as.data.frame(cbind(model[[2]],model[[3]],model[[4]]));
 	colnames(weights) <- c("Weight","Label","Feature");
 	container <- new("maxent", model=model[[1]], weights=weights);
-	
+    
+    suppressWarnings(sink())
+
 	return(container);
 }

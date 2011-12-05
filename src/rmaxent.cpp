@@ -5,9 +5,6 @@
  *  DESCRIPTION: C++ to R interface for the Maximum Entropy library written by Yoshimasa Tsuruoka.
  */
 
-#include <Rcpp.h>
-#include <R.h>
-#include <Rmath.h>
 #include <string>
 #include <sstream>
 #include <iomanip>
@@ -24,26 +21,11 @@ ME_Model model;
 
 // New model
 void new_model() {
+    model.clear();
 	model = *(new ME_Model());
 }
 
-// Add sample data
-void add_samples(vector<string> samples, vector<string> features, SEXP matrix) {
-	new_model();
-	NumericMatrix tdm(matrix);
-	
-	for (int i=0; i < tdm.nrow(); i++) { // for each document
-		//Rprintf("Document %d\n",i); // debug output
-		ME_Sample newSample(samples[i]); // create new sample for code
-		for (int j=0; j < tdm.ncol(); j++) { // for each feature
-			//Rprintf("Feature %s\n",features[j].c_str());
-			if (tdm(i,j) != 0) newSample.add_feature(features[j],tdm(i,j));
-		}
-		model.add_training_sample(newSample);
-	}
-}
-
-void add_samples_sparse(int nrows, int ncols, vector<string> samples, vector<int> ia, vector<string> ja, vector<double> ra) {
+void add_samples(int nrows, int ncols, vector<string> samples, vector<double> ia, vector<string> ja, vector<double> ra) {
 	new_model();
 	for (int i=0; i < nrows; i++) { // for each document
 		//Rprintf("Document %d\n",i); // debug output
@@ -56,42 +38,7 @@ void add_samples_sparse(int nrows, int ncols, vector<string> samples, vector<int
 	}
 }
 
-// Classify
-RcppExport SEXP classify_samples(vector<string> features, SEXP matrix, string model_data) {
-	new_model();
-	model.load_from_string(model_data);
-	NumericMatrix tdm(matrix);
-	NumericMatrix probability_matrix(tdm.nrow(),model.num_classes());
-
-	vector<string> results;
-	vector<string> probability_names;
-
-	for (int i=0; i < tdm.nrow(); i++) { // for each document
-		//Rprintf("Document %d\n",i); // debug output
-		ME_Sample newSample; // create new sample for code
-		for (int j=0; j < tdm.ncol(); j++) { // for each feature
-			if (tdm(i,j) != 0) newSample.add_feature(features[j],tdm(i,j));
-		}
-		
-		vector<double> prob = model.classify(newSample);
-		for (int k=0; k < model.num_classes(); k++) {
-			probability_matrix(i,k) = prob[k];
-		}
-		
-		results.push_back(newSample.label);
-		//Rprintf("Probability %d\n",newSample.probability);
-	}
-	
-	for (int k=0; k < model.num_classes(); k++) {
-		probability_names.push_back(model.get_class_label(k));
-	}
-	
-	List rs = List::create(results,probability_matrix,probability_names);
-	
-	return rs;
-}
-
-RcppExport SEXP classify_samples_sparse(int nrows, int ncols, vector<int> ia, vector<string> ja, vector<double> ra, string model_data) {
+RcppExport SEXP classify_samples(int nrows, int ncols, vector<double> ia, vector<string> ja, vector<double> ra, string model_data) {
 	new_model();
 	model.load_from_string(model_data);
 	vector<string> results;
@@ -112,7 +59,6 @@ RcppExport SEXP classify_samples_sparse(int nrows, int ncols, vector<int> ia, ve
 		}
 		
 		results.push_back(newSample.label);
-		//Rprintf("Probability %d\n",log(newSample.probability)/10);
 	}
 	
 	for (int k=0; k < model.num_classes(); k++) {
@@ -167,10 +113,14 @@ void print_weights() {
 }
 
 // Train model
-RcppExport SEXP train_model(int cutoff=0, double sigma=0, double widthfactor=0, int heldout=0) {
+RcppExport SEXP train_model(double l1=0, double l2=0, bool sgd=FALSE, int sgd_iter=30, double sgd_eta0=1, double sgd_alpha=0.85, int heldout=0) {
 	Rprintf("Training the new model...\n");
 	if (heldout > 0) model.set_heldout(heldout);
-	model.train(cutoff,sigma,widthfactor);
+    if (l1 > 0) model.use_l1_regularizer(l1);
+    else if (l2 > 0) model.use_l2_regularizer(l2);
+    else if (sgd) model.use_SGD();
+	
+    model.train();
 	
 	string model_data = model.save_to_string();
 	vector< vector<string> > weights = export_weights();
@@ -182,11 +132,8 @@ RcppExport SEXP train_model(int cutoff=0, double sigma=0, double widthfactor=0, 
 RCPP_MODULE(maximumentropy) {
 	using namespace Rcpp;
 	function("add_samples", &add_samples);
-	function("add_samples_sparse", &add_samples_sparse);
 	function("classify_samples", &classify_samples);
-	function("classify_samples_sparse", &classify_samples_sparse);
 	function("new_model", &new_model);
 	function("train_model", &train_model);
 	function("export_weights", &export_weights);
-	function("print_weights", &print_weights);
 }

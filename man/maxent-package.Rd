@@ -2,17 +2,17 @@
 \alias{maxent-package}
 \docType{package}
 \title{
-Text Classification Using Low-memory Multinomial Logistic Regression
+Low-memory Multinomial Logistic Regression with Support for Text Classification
 }
 \description{
-\pkg{maxent} is an R package with tools for text classification using multinomial logistic regression, also known as maximum entropy. The focus of this maximum entropy classifier is to minimize memory consumption on very large datasets, particularly sparse document-term matrices represented by the \pkg{tm} package. The library is built on top of an efficient C++ implementation written by Yoshimasa Tsuruoka.
+\pkg{maxent} is an R package with tools for low-memory multinomial logistic regression, also known as maximum entropy. The focus of this maximum entropy classifier is to minimize memory consumption on very large datasets, particularly sparse document-term matrices represented by the \pkg{tm} package. The library is built on top of an efficient C++ implementation written by Yoshimasa Tsuruoka.
 }
 \details{
 \tabular{ll}{
 Package: \tab maxent\cr
 Type: \tab Package\cr
-Version: \tab 1.2.1\cr
-Date: \tab 2011-08-01\cr
+Version: \tab 1.3.0\cr
+Date: \tab 2011-12-05\cr
 License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
 }
@@ -21,7 +21,7 @@ LazyLoad: \tab yes\cr
 Timothy P. Jurka <tpjurka@ucdavis.edu>
 }
 \references{
-Y. Tsuruoka. "A simple C++ library for maximum entropy classification." University of Tokyo Department of Computer Science (Tsujii Laboratory), 2006. URL \url{http://www-tsujii.is.s.u-tokyo.ac.jp/~tsuruoka/maxent/}.
+Y. Tsuruoka. "A simple C++ library for maximum entropy classification." University of Tokyo Department of Computer Science (Tsujii Laboratory), 2011. URL \url{http://www-tsujii.is.s.u-tokyo.ac.jp/~tsuruoka/maxent/}.
 }
 \keyword{package}
 

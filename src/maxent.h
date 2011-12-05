@@ -1,10 +1,11 @@
 /*
- * $Id: maxent.h,v 1.24 2006/08/21 17:30:38 tsuruoka Exp $
+ * $Id: maxent.h,v 1.1.1.1 2007/05/15 08:30:35 kyoshida Exp $
  */
 
 #ifndef __MAXENT_H_
 #define __MAXENT_H_
 
+#include <Rcpp.h>
 #include <string>
 #include <vector>
 #include <list>
@@ -12,10 +13,13 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include <cassert>
-#include "blmvm.h"
+#include "mathvec.h"
+#include <R.h>
 
+#ifdef __GNUC__
 #define USE_HASH_MAP  // if you encounter errors with hash, try commenting out this line. (the program will be a bit slower, though)
+#endif
+
 #ifdef USE_HASH_MAP
 #include <ext/hash_map>
 #endif
@@ -41,7 +45,6 @@ public:
   }
 
 public:
-  double probability;
   std::string label;
   std::vector<std::string> features;
   std::vector<std::pair<std::string, double> > rvfeatures;
@@ -69,10 +72,10 @@ class ME_Model
 public:
 
   void add_training_sample(const ME_Sample & s);
-  int train(const int cutoff = 0, const double sigma = 0, const double widthfactor = 0);
+  int train();
   std::vector<double> classify(ME_Sample & s) const;
   bool load_from_file(const std::string & filename);
-  bool save_to_file(const std::string & filename) const;
+  bool save_to_file(const std::string & filename, const double th = 0) const;
   bool load_from_string(const std::string & model);
   std::string save_to_string();
   int num_classes() const { return _num_classes; }
@@ -80,21 +83,38 @@ public:
   int get_class_id(const std::string & s) const { return _label_bag.Id(s); }
   void get_features(std::list< std::pair< std::pair<std::string, std::string>, double> > & fl);
   void set_heldout(const int h, const int n = 0) { _nheldout = h; _early_stopping_n = n; };
+  void use_l1_regularizer(const double v) { _l1reg = v; }
+  void use_l2_regularizer(const double v) { _l2reg = v; }
+  void use_SGD(int iter = 30, double eta0 = 1, double alpha = 0.85) {
+    _optimization_method = SGD;
+    SGD_ITER = iter; SGD_ETA0 = eta0; SGD_ALPHA = alpha;
+  }
   bool load_from_array(const ME_Model_Data data[]);
   void set_reference_model(const ME_Model & ref_model) { _ref_modelp = &ref_model; };
+  void clear();
 
   ME_Model() {
+    _l1reg = _l2reg = 0;
     _nheldout = 0;
     _early_stopping_n = 0;
     _ref_modelp = NULL;
+    _optimization_method = LBFGS;
   }
 
 public:
   // obsolete. just for downward compatibility
-  int train(const std::vector<ME_Sample> & train,
-            const int cutoff = 0, const double sigma = 0, const double widthfactor = 0);
+  int train(const std::vector<ME_Sample> & train);
 
 private:  
+
+  enum OPTIMIZATION_METHOD { LBFGS, OWLQN, SGD } _optimization_method;
+  // OWLQN and SGD are available only for L1-regularization
+
+  int SGD_ITER;
+  double SGD_ETA0;
+  double SGD_ALPHA;
+
+  double _l1reg, _l2reg;
   
   struct Sample {
     int label;
@@ -102,7 +122,7 @@ private:
     std::vector<std::pair<int, double> > rvfeatures;
     std::vector<double> ref_pd; // reference probability distribution
     bool operator<(const Sample & x) const {
-      for (int i = 0; i < positive_features.size(); i++) {
+      for (unsigned int i = 0; i < positive_features.size(); i++) {
         if (i >= x.positive_features.size()) return false;
         int v0 = positive_features[i];
         int v1 = x.positive_features[i];
@@ -124,8 +144,8 @@ private:
     //    int label() const { return _body >> 24; }
     //    int feature() const { return _body & 0xffffff; }
     ME_Feature(const int l, const int f) : _body((f << 8) + l) {
-      assert(l >= 0 && l <= MAX_LABEL_TYPES);
-      assert(f >= 0 && f <= 0xffffff);
+      //assert(l >= 0 && l <= MAX_LABEL_TYPES);
+      //assert(f >= 0 && f <= 0xffffff);
     };
     int label() const { return _body & 0xff; }
     int feature() const { return _body >> 8; }
@@ -161,7 +181,7 @@ private:
       return j->second;
     }
     ME_Feature Feature(int id) const {
-      assert(id >= 0 && id < (int)id2mef.size());
+      //assert(id >= 0 && id < (int)id2mef.size());
       return id2mef[id];
     }
     int Size() const {
@@ -176,7 +196,7 @@ private:
   struct hashfun_str
   {
     size_t operator()(const std::string& s) const {
-      assert(sizeof(int) == 4 && sizeof(char) == 1);
+      //assert(sizeof(int) == 4 && sizeof(char) == 1);
       const int* p = reinterpret_cast<const int*>(s.c_str());
       size_t v = 0;
       int n = s.size() / 4;
@@ -237,7 +257,7 @@ private:
       return j->second;
     }
     std::string Str(const int id) const {
-      assert(id >= 0 && id < (int)id2str.size());
+      //assert(id >= 0 && id < (int)id2str.size());
       return id2str[id];
     }
     int Size() const { return id2str.size(); }
@@ -250,11 +270,7 @@ private:
   std::vector<Sample> _vs; // vector of training_samples
   StringBag _label_bag;
   MiniStringBag _featurename_bag;
-  double _sigma; // Gaussian prior
-  double _inequality_width;
   std::vector<double> _vl;  // vector of lambda
-  std::vector<double> _va;  // vector of alpha (for inequality ME)
-  std::vector<double> _vb;  // vector of beta  (for inequality ME)
   ME_FeatureBag _fb;
   int _num_classes;
   std::vector<double> _vee;  // empirical expectation
@@ -272,20 +288,22 @@ private:
   int conditional_probability(const Sample & nbs, std::vector<double> & membp) const;
   int make_feature_bag(const int cutoff);
   int classify(const Sample & nbs, std::vector<double> & membp) const;
-  std::vector<double> classify_prob(const Sample & nbs, std::vector<double> & membp) const;
   double update_model_expectation();
-  int perform_LMVM();
+  int perform_QUASI_NEWTON();
+  int perform_SGD();
   int perform_GIS(int C);
+  std::vector<double> perform_LBFGS(const std::vector<double> & x0);
+  std::vector<double> perform_OWLQN(const std::vector<double> & x0, const double C);
+  double backtracking_line_search(const Vec & x0, const Vec & grad0, const double f0, const Vec & dx, Vec & x, Vec & grad1);
+  double regularized_func_grad(const double C, const Vec & x, Vec & grad);
+  double constrained_line_search(double C, const Vec & x0, const Vec & grad0, const double f0, const Vec & dx, Vec & x, Vec & grad1);
+
+
   void set_ref_dist(Sample & s) const;
   void init_feature2mef();
 
-  // BLMVM
-  int BLMVMComputeFunctionGradient(BLMVM blmvm, BLMVMVec X,double *f,BLMVMVec G);
-  int BLMVMComputeBounds(BLMVM blmvm, BLMVMVec XL, BLMVMVec XU);
-  int BLMVMSolve(double *x, int n);
-  int BLMVMFunctionGradient(double *x, double *f, double *g, int n);
-  int BLMVMLowerAndUpperBounds(double *xl,double *xu,int n);
-  int Solve_BLMVM(BLMVM blmvm, BLMVMVec X);
+  double FunctionGradient(const std::vector<double> & x, std::vector<double> & grad);
+  static double FunctionGradientWrapper(const std::vector<double> & x, std::vector<double> & grad);
   
 };
 
@@ -295,6 +313,9 @@ private:
 
 /*
  * $Log: maxent.h,v $
+ * Revision 1.1.1.1  2007/05/15 08:30:35  kyoshida
+ * stepp tagger, by Okanohara and Tsuruoka
+ *
  * Revision 1.24  2006/08/21 17:30:38  tsuruoka
  * use MAX_LABEL_TYPES
  *

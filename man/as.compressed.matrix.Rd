@@ -5,7 +5,7 @@
 converts a tm DocumentTermMatrix or TermDocumentMatrix into a matrix.csr representation.
 }
 \description{
-Converts a \pkg{tm} \code{DocumentTermMatrix} or \code{TermDocumentMatrix} into a \code{matrix.csr} representation to be used in the \code{\link{maxent}} and \code{\link{predict.maxent}} functions.
+Converts a  DocumentTermMatrix or TermDocumentMatrix (package tm), Matrix (package Matrix), matrix.csr (SparseM), data.frame, or matrix into a \code{matrix.csr} representation to be used in the \code{\link{maxent}} and \code{\link{predict.maxent}} functions.
 }
 \usage{
 as.compressed.matrix(DocumentTermMatrix)
@@ -13,12 +13,12 @@ as.compressed.matrix(DocumentTermMatrix)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{DocumentTermMatrix}{
-A class of type \code{DocumentTermMatrix} or \code{TermDocumentMatrix} from package \pkg{tm}.
+A class of type DocumentTermMatrix or TermDocumentMatrix (package tm), Matrix (package Matrix), matrix.csr (SparseM), data.frame, or matrix.
 }
 }
 
 \value{
-A \code{matrix.csr} representation of the \code{DocumentTermMatrix} or \code{TermDocumentMatrix}.
+A \code{matrix.csr} representation of the DocumentTermMatrix or TermDocumentMatrix (package tm), Matrix (package Matrix), matrix.csr (SparseM), data.frame, or matrix.
 }
 
 \author{
