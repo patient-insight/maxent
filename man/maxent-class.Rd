@@ -26,6 +26,7 @@ An \code{S4 class} containing the trained maximum entropy model and its correspo
 Timothy P. Jurka <tpjurka@ucdavis.edu>
 }
 \examples{
+\donttest{
 # LOAD LIBRARY
 library(maxent)
 
@@ -40,6 +41,7 @@ model <- maxent(sparse[1:1000,],as.factor(data$Topic.Code)[1:1000])
 class(model)
 model@model
 model@weights
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

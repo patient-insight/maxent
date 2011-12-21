@@ -27,6 +27,7 @@ Timothy P. Jurka <tpjurka@ucdavis.edu>
 }
 \examples{
 # LOAD LIBRARY
+\donttest{
 library(maxent)
 
 # READ THE DATA, PREPARE THE CORPUS, and CREATE THE MATRIX
@@ -37,15 +38,11 @@ matrix <- DocumentTermMatrix(corpus)
 # TRAIN USING SPARSEM REPRESENTATION
 sparse <- as.compressed.matrix(matrix)
 model <- maxent(sparse[1:1000,],as.factor(data$Topic.Code)[1:1000])
+
 save.model(model,"myModel")
 saved_model <- load.model("myModel")
 results <- predict(saved_model,sparse[1001:1500,])
-
-# TRAIN USING REGULAR MATRIX REPRESENTATION
-model <- maxent(as.matrix(matrix)[1:1000,],as.factor(data$Topic.Code)[1:1000])
-save.model(model,"myModel")
-saved_model <- load.model("myModel")
-results <- predict(saved_model,as.matrix(matrix)[1001:1500,])
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

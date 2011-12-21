@@ -27,6 +27,7 @@ Timothy P. Jurka <tpjurka@ucdavis.edu>
 
 \examples{
 # LOAD LIBRARY
+\donttest{
 library(maxent)
 
 # READ THE DATA, PREPARE THE CORPUS, and CREATE THE MATRIX
@@ -36,6 +37,7 @@ matrix <- DocumentTermMatrix(corpus)
 
 # CREATE A MATRIX.CSR (SPARSEM) REPRESENTATION
 sparse <- as.compressed.matrix(matrix)
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

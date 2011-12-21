@@ -24,6 +24,7 @@ Timothy P. Jurka <tpjurka@ucdavis.edu>
 }
 \examples{
 # LOAD LIBRARY
+\donttest{
 library(maxent)
 
 # READ THE DATA, PREPARE THE CORPUS, and CREATE THE MATRIX
@@ -39,6 +40,7 @@ save.model(model,"myModel")
 # TRAIN USING REGULAR MATRIX REPRESENTATION
 model <- maxent(as.matrix(matrix)[1:1000,],as.factor(data$Topic.Code)[1:1000])
 save.model(model,"myModel")
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
