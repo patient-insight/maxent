@@ -1,5 +1,5 @@
-602b68674afa2b2a9bfb351e6cde42e9 *ChangeLog
-0d7287ddf8909305eea1aa04378c5ef5 *DESCRIPTION
+c681ad1585f353d4182e1065cab34b00 *ChangeLog
+15ace85e6aed054ebb465a57dcdc3504 *DESCRIPTION
 cf0eb7cb2dd8caeddcfb46f0f40d0840 *NAMESPACE
 21099193f783572ca34c0d68ac55f43a *R/as.compressed.matrix.R
 5e2eb77be598189fa05f332ef5cacaee *R/load.model.R
@@ -21,8 +21,8 @@ acf8a2d65ce4f622d6c622e1db61880f *data/USCongress.csv.gz
 5fd598ebd8a21e47ed1b06827816d389 *man/predict.maxent.Rd
 7abe79e377c85ecb6b1580271ef28c80 *man/save.model.Rd
 32c07989b93cc27bab82ffa379ee1396 *man/tune.maxent.Rd
-04814f3f29e1da71b5790ea6fced222f *src/Makevars
-ee7cefc5b43d454cd8b9db2962aea0e0 *src/Makevars.win
+22dc37236877896948fe8a542a1f0b87 *src/Makevars
+0b8c5dc2050419ecb70633cdf21191b5 *src/Makevars.win
 fc66e7247bb9a9b432ccb9eef997158f *src/lbfgs.cpp
 8343b6d23f69f6ad09fe8580ecefd926 *src/lbfgs.h
 bba02c8dca1189adb63501e4622660c6 *src/mathvec.h
