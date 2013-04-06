@@ -8,7 +8,8 @@ trains a maximum entropy model given a training matrix and a vector or factor of
 Trains a multinomial logistic regression model of class \code{\link{maxent-class}} given a \code{matrix} or \code{matrix.csr} with training data, and a \code{vector} or \code{factor} with corresponding labels. Additional parameters such as \code{feature_cutoff}, \code{gaussian_prior}, \code{inequality_constraints}, and \code{set_heldout} help prevent model overfitting.
 }
 \usage{
-maxent(feature_matrix, code_vector, l1_regularizer=0.0, l2_regularizer=0.0, use_sgd=FALSE, set_heldout=0, verbose=FALSE)
+maxent(feature_matrix, code_vector, l1_regularizer=0.0, l2_regularizer=0.0,
+       use_sgd=FALSE, set_heldout=0, verbose=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

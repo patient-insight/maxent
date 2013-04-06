@@ -130,7 +130,7 @@ ME_Model::conditional_probability(const Sample & s,
   }
   for (int label = 0; label < _num_classes; label++) {
     membp[label] /= sum;
-    if (membp[label] > membp[max_label]) max_label = label;
+    if (max_label < 0 || membp[label] > membp[max_label]) max_label = label;
   }
   //assert(max_label >= 0);
   return max_label;
@@ -143,7 +143,11 @@ ME_Model::make_feature_bag(const int cutoff)
 
   // count the occurrences of features
 #ifdef USE_HASH_MAP
+#if __cplusplus < 201103L
   typedef std::tr1::unordered_map<unsigned int, int> map_type;
+#else
+  typedef std::unordered_map<unsigned int, int> map_type;
+#endif
 #else    
   typedef std::map<unsigned int, int> map_type;
 #endif

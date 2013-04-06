@@ -16,12 +16,16 @@
 #include "mathvec.h"
 #include <R.h>
 
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__clang__)
 #define USE_HASH_MAP  // if you encounter errors with hash, try commenting out this line. (the program will be a bit slower, though)
 #endif
 
-#ifdef USE_HASH_MAP
+#ifdef USE_HASH_MAP 
+#if __cplusplus < 201103L
 #include <tr1/unordered_map>
+#else
+#include <unordered_map>
+#endif
 #endif
 
 //
@@ -157,7 +161,11 @@ private:
   struct ME_FeatureBag
   {
 #ifdef USE_HASH_MAP
+#if __cplusplus < 201103L
     typedef std::tr1::unordered_map<unsigned int, int> map_type;
+#else
+    typedef std::unordered_map<unsigned int, int> map_type;
+#endif
 #else    
     typedef std::map<unsigned int, int> map_type;
 #endif
@@ -215,7 +223,11 @@ private:
   struct MiniStringBag
   {
 #ifdef USE_HASH_MAP
+#if __cplusplus < 201103L
     typedef std::tr1::unordered_map<std::string, int, hashfun_str> map_type;
+#else
+    typedef std::unordered_map<std::string, int, hashfun_str> map_type;
+#endif
 #else    
     typedef std::map<std::string, int> map_type;
 #endif

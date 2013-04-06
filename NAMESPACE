@@ -1,6 +1,6 @@
 import(methods)
 import(Rcpp)
-import(SparseM)
+importFrom(SparseM, as.matrix.csr)
 import(tm)
 
 exportClasses(

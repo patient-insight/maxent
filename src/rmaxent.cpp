@@ -130,10 +130,9 @@ RcppExport SEXP train_model(double l1=0, double l2=0, bool sgd=FALSE, int sgd_it
 }
 
 RCPP_MODULE(maximumentropy) {
-	using namespace Rcpp;
-	function("add_samples", &add_samples);
-	function("classify_samples", &classify_samples);
-	function("new_model", &new_model);
-	function("train_model", &train_model);
-	function("export_weights", &export_weights);
+	Rcpp::function("add_samples", &add_samples);
+	Rcpp::function("classify_samples", &classify_samples);
+	Rcpp::function("new_model", &new_model);
+	Rcpp::function("train_model", &train_model);
+	Rcpp::function("export_weights", &export_weights);
 }

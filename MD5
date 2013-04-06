@@ -1,6 +1,6 @@
 2b0d9855e7cdd8d7f28794752fc645ee *ChangeLog
-dbfe3d87f87295b6edd677dac5657b9a *DESCRIPTION
-cf0eb7cb2dd8caeddcfb46f0f40d0840 *NAMESPACE
+343070d3a7bcef9fc12bd37737ebeaf4 *DESCRIPTION
+c57b1dd65e15396c88a8c9310c3b2c98 *NAMESPACE
 21099193f783572ca34c0d68ac55f43a *R/as.compressed.matrix.R
 5e2eb77be598189fa05f332ef5cacaee *R/load.model.R
 9513ab1c32131e550a1e78e60dad5a65 *R/maxent.R
@@ -17,7 +17,7 @@ a80181f806799503eec56b66a905a6e0 *man/as.compressed.matrix.Rd
 39c2cccb6c3b51c61359bcd2865b3e69 *man/load.model.Rd
 3b96661544af8377423f877bd363b33b *man/maxent-class.Rd
 e8cbd229e0b91be7e20e6e2457a5dcfc *man/maxent-package.Rd
-1af694493fe6c5cbde9804719f352102 *man/maxent.Rd
+5598cc90050a7e751098035aa2b4c57d *man/maxent.Rd
 b369ad8eb8351fce49ad71cdd8a0d513 *man/predict.maxent.Rd
 c43061aa8debf510d7b5df87c3ac149e *man/save.model.Rd
 9057b92566dfb7817cf2951e9d13a7bf *man/tune.maxent.Rd
@@ -26,8 +26,8 @@ c43061aa8debf510d7b5df87c3ac149e *man/save.model.Rd
 fc66e7247bb9a9b432ccb9eef997158f *src/lbfgs.cpp
 8343b6d23f69f6ad09fe8580ecefd926 *src/lbfgs.h
 bba02c8dca1189adb63501e4622660c6 *src/mathvec.h
-2e2b111125511730d7ad1e35487f2a03 *src/maxent.cpp
-59a437e95273104baaf6e713ab933aac *src/maxent.h
+be4c2f520e3fb461f71326f0afe557db *src/maxent.cpp
+37d4c8bde26a078dd22d2a6eeb6fc5d1 *src/maxent.h
 a58bc7542690eec707d432ed12d489ce *src/owlqn.cpp
-eb2ee4b0dc8dc7cbf33401df17ff0b9f *src/rmaxent.cpp
+4997cbb1045a0a70149a34aa5269f14c *src/rmaxent.cpp
 59b1d280ae0e1b4c4693dd471b5ae0cd *src/sgd.cpp
