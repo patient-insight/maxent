@@ -39,17 +39,6 @@ Timothy P. Jurka <tpjurka@ucdavis.edu>
 # LOAD LIBRARY
 library(maxent)
 
-# READ THE DATA, PREPARE THE CORPUS, and CREATE THE MATRIX
-\donttest{
-data <- read.csv(system.file("data/NYTimes.csv.gz",package="maxent"))
-corpus <- Corpus(VectorSource(data$Title))
-matrix <- DocumentTermMatrix(corpus)
-
-# TRAIN USING SPARSEM REPRESENTATION
-sparse <- as.compressed.matrix(matrix)
-model <- tune.maxent(sparse[1:1000,],as.factor(data$Topic.Code)[1:1000])
-
-
 # A DIFFERENT EXAMPLE
 data(iris)
 attach(iris)
@@ -58,7 +47,6 @@ x <- subset(iris, select = -Species)
 y <- Species
 
 f <- tune.maxent(x,y,nfold=3,showall=TRUE)
-}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

@@ -21,7 +21,7 @@
 #endif
 
 #ifdef USE_HASH_MAP
-#include <ext/hash_map>
+#include <tr1/unordered_map>
 #endif
 
 //
@@ -157,7 +157,7 @@ private:
   struct ME_FeatureBag
   {
 #ifdef USE_HASH_MAP
-    typedef __gnu_cxx::hash_map<unsigned int, int> map_type;
+    typedef std::tr1::unordered_map<unsigned int, int> map_type;
 #else    
     typedef std::map<unsigned int, int> map_type;
 #endif
@@ -215,7 +215,7 @@ private:
   struct MiniStringBag
   {
 #ifdef USE_HASH_MAP
-    typedef __gnu_cxx::hash_map<std::string, int, hashfun_str> map_type;
+    typedef std::tr1::unordered_map<std::string, int, hashfun_str> map_type;
 #else    
     typedef std::map<std::string, int> map_type;
 #endif

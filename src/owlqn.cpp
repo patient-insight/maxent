@@ -25,7 +25,7 @@ inline int sign(double x)
   if (x > 0) return 1;
   if (x < 0) return -1;
   return 0;
-};
+}
 
 static Vec
 pseudo_gradient(const Vec & x, const Vec & grad0, const double C)

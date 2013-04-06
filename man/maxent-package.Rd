@@ -11,8 +11,8 @@ Low-memory Multinomial Logistic Regression with Support for Text Classification
 \tabular{ll}{
 Package: \tab maxent\cr
 Type: \tab Package\cr
-Version: \tab 1.3.1\cr
-Date: \tab 2011-12-21\cr
+Version: \tab 1.3.3\cr
+Date: \tab 2013-04-06\cr
 License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
 }
@@ -27,17 +27,15 @@ Y. Tsuruoka. "A simple C++ library for maximum entropy classification." Universi
 
 \examples{
 # LOAD LIBRARY
-\donttest{
 library(maxent)
 
 # READ THE DATA, PREPARE THE CORPUS, and CREATE THE MATRIX
 data <- read.csv(system.file("data/NYTimes.csv.gz",package="maxent"))
-corpus <- Corpus(VectorSource(data$Title))
+corpus <- Corpus(VectorSource(data$Title[1:150]))
 matrix <- DocumentTermMatrix(corpus)
 
 # TRAIN/PREDICT USING SPARSEM REPRESENTATION
 sparse <- as.compressed.matrix(matrix)
-model <- maxent(sparse[1:1000,],data$Topic.Code[1:1000])
-results <- predict(model,sparse[1001:1500,])
-}
+model <- maxent(sparse[1:100,],data$Topic.Code[1:100])
+results <- predict(model,sparse[101:150,])
 }
