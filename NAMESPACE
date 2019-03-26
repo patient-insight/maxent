@@ -3,14 +3,10 @@ import(Rcpp)
 importFrom(SparseM, as.matrix.csr)
 import(tm)
 
-exportClasses(
-              maxent
-              )
+exportClasses(maxent)
 
-exportPattern("^[^\\.]")
-
+export(maxent)
+export(tune.maxent)
 
 S3method("as","compressed.matrix")
 S3method("predict","maxent")
-S3method("load","model")
-S3method("save","model")
